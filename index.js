@@ -13,16 +13,36 @@ const port = 3000
 const bodyParser = require('body-parser') // merubah dan menerima data respon menjadi format json
 const database = require('./connection') // memanggil file connection.js
 const responses = require('./responses') 
+const { request } = require('express')
+const db = require('./queries')
 
+// app.use(bodyParser.json())
 app.use(bodyParser.json())
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+)
 
+// =========================================================================================================
+// tutorial CRUD API dengan postgre
+app.get('/', (request, response) => {
+  response.json({ info: 'Node.js, Express, and Postgres API' })
+})
+
+app.get('/users', db.getUsers)
+app.get('/users/id', db.getUserById)
+
+// =========================================================================================================
+// tutorial CRUD API dengan mysql
 // rout URL atau bisa disebut endpoint
-// app.get('/', (req, res) => {
-//   database.query("SELECT * FROM tbuser", (error, result) => {
-//     // hasil dari mysql
-//     responses(200, result, 'get all data from table', res)
-//   })
-// })
+app.get('/', (req, res) => {
+  database.query("SELECT * FROM tbuser", (error, result) => {
+    // hasil dari mysql
+    responses(200, result, 'get all data from table', res)
+  })
+})
+
 
 app.get('/database',(req,res) => {
   const sql = "select * from tbuser"
